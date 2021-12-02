@@ -37,8 +37,6 @@ fn find_pos2(lines: Vec<(i32, i32)>) -> i32 {
         aim = aim + line.1;
         sum = (sum.0 + line.0, sum.1 + line.0 * aim);
     }
-    println!("{:?}", aim);
-    println!("{:?}", sum);
     sum.0 * sum.1
 }
 
