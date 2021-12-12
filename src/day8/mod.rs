@@ -42,6 +42,30 @@ fn part1(input: &str) -> usize {
         .count()
 }
 
+fn part2(input: &str) -> usize {
+    input.lines().map(|l| parse_line(l));
+    1
+}
+
+fn parse_line(input: &str) {
+    let (def, nums) = input.split_once("|").unwrap();
+    let mut map: HashMap<usize, Vec<Vec<char>>> = HashMap::new();
+    def.split_ascii_whitespace().for_each(|d| {
+        map.entry(d.len())
+            .or_insert_with(|| vec![])
+            .push(d.to_string().chars().sorted().collect_vec())
+    });
+    let mut res: HashMap<&Vec<char>, usize> = HashMap::new();
+    //1
+    res.insert(map.get(&2).unwrap().get(0).unwrap(), 1);
+    //7
+    res.insert(map.get(&3).unwrap().get(0).unwrap(), 7);
+    //4
+    res.insert(map.get(&4).unwrap().get(0).unwrap(), 4);
+    //8
+    res.insert(map.get(&7).unwrap().get(0).unwrap(), 8);
+}
+
 const INPUT: &str = include_str!("input.txt");
 
 #[cfg(test)]
