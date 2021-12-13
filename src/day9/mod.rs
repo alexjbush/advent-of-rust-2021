@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::collections::HashSet;
 
 use itertools::Itertools;
 
@@ -21,7 +20,7 @@ fn task1() -> String {
 }
 
 fn task2() -> String {
-    "N/A".to_string()
+    step2(INPUT).to_string()
 }
 
 struct CaveMap {
@@ -74,11 +73,50 @@ fn step1(input: &str) -> u32 {
         .sum()
 }
 
+fn step2(input: &str) -> u32 {
+    let map = CaveMap::create(input);
+    let mut count = 0;
+    let mut res: HashMap<(i32, i32), i32> = HashMap::new();
+    for (x, y) in (0..map.width).flat_map(|x| (0..map.height).map(move |y| (x, y))) {
+        if map.get_coord(x, y).map_or_else(|| true, |v| v == 9) || res.contains_key(&(x, y)) {
+            continue;
+        }
+        let mut to_visit: Vec<(i32, i32)> = vec![(x, y)];
+        while to_visit.len() > 0 {
+            let (t_x, t_y) = to_visit.pop().unwrap();
+            if map.get_coord(t_x, t_y).map_or_else(|| true, |v| v == 9)
+                || res.contains_key(&(t_x, t_y))
+            {
+                continue;
+            }
+            res.insert((t_x, t_y), count);
+            vec![
+                (t_x - 1, t_y),
+                (t_x + 1, t_y),
+                (t_x, t_y - 1),
+                (t_x, t_y + 1),
+            ]
+            .into_iter()
+            .for_each(|v| to_visit.push(v));
+        }
+        count += 1;
+    }
+    res.values()
+        .sorted()
+        .group_by(|k| *k)
+        .into_iter()
+        .map(|(_, b)| b.count())
+        .sorted_by(|a, b| Ord::cmp(&b, &a))
+        .take(3)
+        .map(|v| v as u32)
+        .product()
+}
+
 const INPUT: &str = include_str!("input.txt");
 
 #[cfg(test)]
 mod tests {
-    use crate::day9::step1;
+    use crate::day9::{step1, step2};
 
     use super::CaveMap;
 
@@ -106,6 +144,6 @@ mod tests {
 
     #[test]
     fn part_2() {
-        // assert_eq!(part2(TEST_INPUT), 61229);
+        assert_eq!(step2(TEST_INPUT), 1134);
     }
 }
