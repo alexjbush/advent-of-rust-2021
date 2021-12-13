@@ -4,7 +4,7 @@ pub struct Day1 {}
 
 impl<'a> Day<'a> for Day1 {
     fn get_tasks(&self) -> Vec<(usize, &dyn Fn() -> String)> {
-        vec![(1, &task1), (1, &task2)]
+        vec![(1, &task1), (2, &task2)]
     }
 
     fn get_day_number(&self) -> usize {
